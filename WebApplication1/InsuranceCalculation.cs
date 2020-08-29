@@ -29,40 +29,59 @@ namespace WebApplication1
         {
             DateTime dttimestamp;
             double speed;
-            using (StreamReader r = new StreamReader("waypoint.json"))
+            try
             {
-                string json = r.ReadToEnd();
-                JsonSerializer serializer = new JsonSerializer();
-                List<Item> items = JsonConvert.DeserializeObject<List<Item>>(json);
-                
-                Console.WriteLine("The JSON data: ", items[2].timestamp.TimeOfDay);  
-                dttimestamp = Convert.ToDateTime(items[2].timestamp.TimeOfDay.ToString());
-                speed = Math.Round(items[2].speed, 3);
-                Categories(speed, dttimestamp); //for calculation and categorization
+                using (StreamReader r = new StreamReader("waypoint.json"))
+                {
+                    string json = r.ReadToEnd();
+                    JsonSerializer serializer = new JsonSerializer();
+                    List<Item> items = JsonConvert.DeserializeObject<List<Item>>(json);
 
-                // for loop to calculate speed , distance and time for individual item in the json file
+                    Console.WriteLine("The JSON data: ", items[2].timestamp.TimeOfDay);
+                    dttimestamp = Convert.ToDateTime(items[2].timestamp.TimeOfDay.ToString());
+                    speed = Math.Round(items[2].speed, 3);
+                    Categories(speed, dttimestamp); //for calculation and categorization
+
+                    // for loop to calculate speed , distance and time for individual item in the json file
+                }
+
             }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
 
         //calculation for Distance Speeding ,Duration Speeding , Total Distance , Total Duration
         public static void Categories(double speed, DateTime time)
         {
-            //•	Distance Speeding
-            double distance, totalduration;
-            long lngtime = time.ToFileTime();
-            var vartime = DateTimeOffset.FromFileTime(lngtime).TimeOfDay;
-            double hours = vartime.TotalHours; //could round it up to 3 points
-            //Speed = distance / time  , time = distance / speed and distance = speed * time  // this is the final calculation
-            distance = hours * speed;
+            try
+            {
+                //•	Distance Speeding
+                double distance, totalduration;
+                long lngtime = time.ToFileTime();
+                var vartime = DateTimeOffset.FromFileTime(lngtime).TimeOfDay;
+                double hours = vartime.TotalHours; //could round it up to 3 points
+                                                   //Speed = distance / time  , time = distance / speed and distance = speed * time  // this is the final calculation
+                distance = Math.Round((hours * speed), 2);
 
-            speed = distance / hours;
+                speed = Math.Round((distance / hours), 2);
 
-            totalduration = distance / speed;
+                totalduration = Math.Round((distance / speed), 2);
 
-            Console.WriteLine("Distance Speeding :", distance);
-            Console.WriteLine("Duration Speeding :", speed);
-            Console.WriteLine("Total Distance :");
-            Console.WriteLine("Total Duration :", time);
+                Console.WriteLine("Distance Speeding :", distance);
+                Console.WriteLine("Duration Speeding :", speed);
+                Console.WriteLine("Total Distance :");
+                Console.WriteLine("Total Duration :", time);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
     }
 }
